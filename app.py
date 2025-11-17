@@ -1,6 +1,14 @@
-import logging
-
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from controllers import health_router, chat_router
+from config.settings import settings
 
-logger = logging.getLogger("uvicorn.error")
-app = FastAPI(title="CV Chatbot API", version="1.0.0")
+app = FastAPI(title=settings.app_name, version=settings.app_version)
+
+# routers
+app.include_router(health_router, prefix="/api/v1")
+app.include_router(chat_router, prefix="/api/v1")
+
+@app.get("/")
+def root():
+    return {"status": "running"}

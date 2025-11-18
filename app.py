@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from controllers import health_router, chat_router
+from controllers import health_router, chat_router, user_tracking_router
 from config.settings import settings
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -7,7 +7,7 @@ app = FastAPI(title=settings.app_name, version=settings.app_version)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8080"], 
+    allow_origins=["http://localhost:8080", "https://martin.find-tradespeople.com"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -16,6 +16,7 @@ app.add_middleware(
 # routers
 app.include_router(health_router, prefix="/api/v1")
 app.include_router(chat_router, prefix="/api/v1")
+app.include_router(user_tracking_router, prefix="/api/v1")
 
 @app.get("/")
 def root():

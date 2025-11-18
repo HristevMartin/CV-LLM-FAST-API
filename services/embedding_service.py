@@ -19,7 +19,7 @@ class EmbeddingService:
         self.top_k = settings.rag_top_k
         self.cv_source = settings.cv_source
 
-    def semantic_search(self, question: str, k: int = None) -> List[Dict]:
+    def  semantic_search(self, question: str, k: int = None) -> List[Dict]:
         """
         Perform semantic search on CV chunks
 

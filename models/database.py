@@ -6,6 +6,9 @@ These define the structure of documents stored in MongoDB
 from pydantic import BaseModel, Field
 from typing import List
 from datetime import datetime
+from pydantic import BaseModel, Field
+from datetime import datetime
+from typing import Optional
 
 
 class Message(BaseModel):
@@ -53,3 +56,14 @@ class Conversation(BaseModel):
                 "updated_at": "2024-01-15T10:30:05"
             }
         }
+
+
+class UserTracking(BaseModel):
+    """User tracking document stored in MongoDB"""
+
+    id: Optional[str] = Field(default=None, alias="_id")
+    ip_address: str
+    user_agent: Optional[str] = None
+    visited_at: datetime = Field(default_factory=datetime.utcnow)
+    session_id: Optional[str] = None  
+    page: Optional[str] = None 

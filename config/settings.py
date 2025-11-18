@@ -53,6 +53,10 @@ class Settings(BaseSettings):
         default="conversations",
         description="MongoDB collection for conversations"
     )
+    mongodb_user_tracking_collection: str = Field(
+        default="user_tracking",
+        description="MongoDB collection for user tracking events"
+    )
 
     # ===== RAG Configuration =====
     rag_top_k: int = Field(

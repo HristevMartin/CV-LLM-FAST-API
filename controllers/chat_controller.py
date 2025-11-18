@@ -31,7 +31,6 @@ def chat(request: ChatRequest):
             question=request.question
         )
 
-        # Transform to response DTO (View layer)
         return ChatResponse(
             session_id=request.session_id,
             question=request.question,

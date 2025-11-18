@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from controllers import health_router, chat_router
 from config.settings import settings
 from fastapi.middleware.cors import CORSMiddleware

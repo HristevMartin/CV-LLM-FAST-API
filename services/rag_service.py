@@ -4,6 +4,7 @@ Coordinates memory, embedding, and chat completion services
 """
 
 from typing import Dict
+from pathlib import Path
 from connectors.openai_connector import openai_connector
 from .memory_service import memory_service
 from .embedding_service import embedding_service
@@ -16,6 +17,10 @@ class RAGService:
         self.openai = openai_connector
         self.memory = memory_service
         self.embedding = embedding_service
+        prompt_path = Path(__file__).resolve().parent.parent / "rag_system_prompt.txt"
+        if not prompt_path.exists():
+            raise FileNotFoundError(f"System prompt file not found at {prompt_path}")
+        self.system_prompt_template = prompt_path.read_text(encoding="utf-8")
 
     def _is_vague_query(self, question: str) -> bool:
         """
@@ -87,7 +92,7 @@ Only output the rewritten question, nothing else."""
         # Step 1: Save user message
         self.memory.save_user_message(session_id, question)
 
-        # Step 2: Check if query needs rewriting
+        # Step 2: query needs rewriting
         search_query = question
         if self._is_vague_query(question):
             search_query = self._rewrite_query(session_id, question)
@@ -95,9 +100,12 @@ Only output the rewritten question, nothing else."""
         # Step 3: Semantic search for relevant CV chunks
         hits = self.embedding.semantic_search(search_query)
 
-        # Step 4: Handle no results
+        # Step 4: Handle no results (no documents retrieved or all filtered out)
         if not hits:
-            answer = "I couldn't find relevant information in the CV to answer this question."
+            answer = (
+                "I couldn’t find anything in Martin Hristev’s CV that answers this question. "
+                "Try asking about my skills, experience, projects, education, or certifications."
+            )
             self.memory.save_assistant_message(session_id, answer)
             return {
                 "answer": answer,
@@ -111,20 +119,11 @@ Only output the rewritten question, nothing else."""
         history = self.memory.get_conversation_history(session_id)
 
         # Step 7: Build messages for chat completion
+        system_prompt = self.system_prompt_template.replace("{{context}}", cv_context.strip())
         messages = [
             {
                 "role": "system",
-                "content": """You are a helpful assistant answering questions about Martin Hristev's CV.
-
-Guidelines:
-- Use conversation history for context
-- Answer based on the CV context provided
-- Be concise and accurate
-- Prefer giving a concrete answer over saying that information is not specified.
-- When the user asks about total years of experience, infer a reasonable total from the CV dates and roles.
-  - If the exact number is not explicitly stated, provide your best estimate in years and clearly mark it as an estimate.
-  - Example style: "Martin has approximately 5-6 years of total professional experience based on the CV timeline."
-- Reference previous conversation naturally when relevant."""
+                "content": system_prompt
             }
         ]
 
@@ -132,11 +131,7 @@ Guidelines:
 
         messages.append({
             "role": "user",
-            "content": f"""CV Context:
-
-{cv_context}
-
-Question: {question}"""
+            "content": question
         })
 
         # Step 8: Generate answer

@@ -4,6 +4,8 @@ These define what the API returns to the client
 """
 
 from pydantic import BaseModel, Field
+from typing import Any
+from datetime import datetime
 
 
 class ChatResponse(BaseModel):
@@ -36,5 +38,21 @@ class HealthResponse(BaseModel):
             "example": {
                 "status": "healthy",
                 "version": "1.0.0"
+            }
+        }
+
+
+class SaveUserQuestionResponse(BaseModel):
+    """Response model for save user question endpoint"""
+    name: str = Field(..., description="Name")
+    email: str = Field(..., description="Email")
+    message: str = Field(..., description="Message")
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "name": "John Doe",
+                "email": "john.doe@example.com",
+                "message": "What cloud platforms has Martin used?",
             }
         }

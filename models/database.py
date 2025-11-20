@@ -67,3 +67,11 @@ class UserTracking(BaseModel):
     visited_at: datetime = Field(default_factory=datetime.utcnow)
     session_id: Optional[str] = None  
     page: Optional[str] = None 
+
+
+class SaveUserQuestion(BaseModel):
+    """Save user question document stored in MongoDB"""
+    id: Optional[str] = Field(default=None, alias="_id")
+    name: str = Field(..., description="Name")  
+    email: str = Field(..., description="Email")
+    message: str = Field(..., description="Message")

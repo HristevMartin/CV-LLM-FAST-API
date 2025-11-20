@@ -58,6 +58,11 @@ class Settings(BaseSettings):
         description="MongoDB collection for user tracking events"
     )
 
+    mongodb_user_question_collection: str = Field(
+        default="user_questions",
+        description="MongoDB collection for user questions"
+    )
+
     # ===== RAG Configuration =====
     rag_top_k: int = Field(
         default=5,

@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from controllers import health_router, chat_router, user_tracking_router
+from controllers import health_router, chat_router, user_tracking_router, save_user_question_router
 from config.settings import settings
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -17,6 +17,7 @@ app.add_middleware(
 app.include_router(health_router, prefix="/api/v1")
 app.include_router(chat_router, prefix="/api/v1")
 app.include_router(user_tracking_router, prefix="/api/v1")
+app.include_router(save_user_question_router, prefix="/api/v1")
 
 @app.get("/")
 def root():

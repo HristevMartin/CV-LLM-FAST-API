@@ -25,11 +25,12 @@ def chat(request: ChatRequest):
         ChatResponse with answer and metadata
     """
     try:
-        # Delegate to service layer (business logic)
+        print('in here22')
         result = rag_service.process_question(
             session_id=request.session_id,
             question=request.question
         )
+        print('in 3333')
 
         return ChatResponse(
             session_id=request.session_id,

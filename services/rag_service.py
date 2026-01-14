@@ -90,13 +90,16 @@ Only output the rewritten question, nothing else."""
             Dict with answer and metadata
         """
         # Step 1: Save user message
+        print('not getting passed')
         self.memory.save_user_message(session_id, question)
+        print('passing in here')
 
         # Step 2: query needs rewriting
         search_query = question
         if self._is_vague_query(question):
             search_query = self._rewrite_query(session_id, question)
-
+        
+        print('passing further')
         # Step 3: Semantic search for relevant CV chunks
         hits = self.embedding.semantic_search(search_query)
 
@@ -111,13 +114,14 @@ Only output the rewritten question, nothing else."""
                 "answer": answer,
                 "sources_count": 0
             }
-
+        
+        print('passing further1')
         # Step 5: Extract context from search results
         cv_context = self.embedding.extract_context_from_hits(hits)
-
+        print('passing further2')
         # Step 6: Get conversation history for context
         history = self.memory.get_conversation_history(session_id)
-
+        print('passing further3')
         # Step 7: Build messages for chat completion
         system_prompt = self.system_prompt_template.replace("{{context}}", cv_context.strip())
         messages = [

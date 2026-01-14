@@ -14,6 +14,8 @@ class MongoConnector:
 
     def __init__(self):
         """Initialize MongoDB client"""
+        self.dummy = settings.mongodb_uri
+        print('dummy', self.dummy)
         self.client = MongoClient(settings.mongodb_uri)
         self.db = self.client[settings.mongodb_database]
         self.collection = self.db[settings.mongodb_collection]
@@ -27,21 +29,25 @@ class MongoConnector:
             role: Message role ('user' or 'assistant')
             content: Message content
         """
-        self.collection.update_one(
-            {"session_id": session_id},
-            {
-                "$setOnInsert": {"created_at": datetime.now()},
-                "$set": {"updated_at": datetime.now()},
-                "$push": {
-                    "messages": {
-                        "role": role,
-                        "content": content,
-                        "timestamp": datetime.now()
+        try:
+            self.collection.update_one(
+                {"session_id": session_id},
+                {
+                    "$setOnInsert": {"created_at": datetime.now()},
+                    "$set": {"updated_at": datetime.now()},
+                    "$push": {
+                        "messages": {
+                            "role": role,
+                            "content": content,
+                            "timestamp": datetime.now()
+                        }
                     }
-                }
-            },
-            upsert=True
-        )
+                },
+                upsert=True
+            )
+        except Exception as e:
+            print('show me the error', e)
+        print('babababab')
 
     def get_history(self, session_id: str, limit: int = 10) -> List[Dict]:
         """

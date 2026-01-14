@@ -46,7 +46,7 @@ class Settings(BaseSettings):
     # ===== MongoDB Configuration =====
     mongodb_uri: str = Field(..., description="MongoDB connection URI")
     mongodb_database: str = Field(
-        default="cv_chatbot",
+        default="cv_llm_chatbot",
         description="MongoDB database name"
     )
     mongodb_collection: str = Field(
